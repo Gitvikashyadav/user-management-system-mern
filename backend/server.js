@@ -57,7 +57,7 @@ app.use(
 /* ─────────────────────────────
    HEALTH ROUTE (IMPORTANT)
 ───────────────────────────── */
-app.get("/api/health", async (req, res) => {
+app.get("/health", async (req, res) => {
   try {
     await connectToDB();
 
