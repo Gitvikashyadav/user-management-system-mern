@@ -1,6 +1,6 @@
-const authService = require('../services/authService');
-const { asyncHandler } = require('../middleware/asyncHandler');
-const { sendTokenResponse } = require('../utils/tokenUtils');
+const authService = require("../services/authService");
+const { asyncHandler } = require("../middleware/asyncHandler");
+const { sendTokenResponse } = require("../utils/tokenUtils");
 
 /**
  * @route   POST /api/auth/register
@@ -8,7 +8,11 @@ const { sendTokenResponse } = require('../utils/tokenUtils');
  */
 const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
-  const { user, accessToken, refreshToken } = await authService.register({ name, email, password });
+  const { user, accessToken, refreshToken } = await authService.register({
+    name,
+    email,
+    password,
+  });
   sendTokenResponse(res, 201, user, accessToken, refreshToken);
 });
 
@@ -18,7 +22,10 @@ const register = asyncHandler(async (req, res) => {
  */
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  const { user, accessToken, refreshToken } = await authService.login({ email, password });
+  const { user, accessToken, refreshToken } = await authService.login({
+    email,
+    password,
+  });
   sendTokenResponse(res, 200, user, accessToken, refreshToken);
 });
 
@@ -38,7 +45,7 @@ const refresh = asyncHandler(async (req, res) => {
  */
 const logout = asyncHandler(async (req, res) => {
   await authService.logout(req.user._id);
-  res.status(200).json({ success: true, message: 'Logged out successfully.' });
+  res.status(200).json({ success: true, message: "Logged out successfully." });
 });
 
 /**
