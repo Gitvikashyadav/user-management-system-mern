@@ -69,12 +69,12 @@ app.get("/api/health", (req, res) => {
 });
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
+// app.use("/api/auth", require("./routes/authRoutes"));
+// app.use("/api/users", require("./routes/userRoutes"));
 
 // ─── Error Handling ───────────────────────────────────────────────────────────
-app.use(notFound);
-app.use(errorHandler);
+// app.use(notFound);
+// app.use(errorHandler);
 
 // ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
@@ -89,4 +89,4 @@ process.on("unhandledRejection", (err) => {
 });
 
 module.exports = app;
-S;
+
