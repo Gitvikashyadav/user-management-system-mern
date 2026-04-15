@@ -11,31 +11,58 @@ const { errorHandler, notFound } = require("./middleware/errorMiddleware");
 
 const app = express();
 
-/* ─────────────────────────────
-   DB CONNECTION (SAFE FOR VERCEL)
-───────────────────────────── */
+/* ───────────────────────────────
+   SAFE ERROR HANDLING (FIXED)
+─────────────────────────────── */
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Rejection:", err.message);
+});
+
+/* ───────────────────────────────
+   SAFE DB CONNECTION
+─────────────────────────────── */
 let isConnected = false;
-
-const connectToDB = async () => {
-  if (!isConnected) {
-    await connectDB();
-    isConnected = true;
-  }
+const safeConnectDB = async () => {
+  if (isConnected) return;
+  await connectDB();
+  isConnected = true;
 };
+safeConnectDB();
 
-/* ─────────────────────────────
-   GLOBAL MIDDLEWARE
-───────────────────────────── */
+/* ───────────────────────────────
+   SECURITY
+─────────────────────────────── */
 app.use(helmet());
 
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    message: "Too many requests",
+  },
+});
+
+app.use("/api", limiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+});
+
+app.use("/api/auth", authLimiter);
+
+/* ───────────────────────────────
+   MIDDLEWARE
+─────────────────────────────── */
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
 
-app.use(express.json({ limit: "10kb" }));
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(xss());
 
@@ -43,52 +70,36 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-/* ─────────────────────────────
-   RATE LIMIT
-───────────────────────────── */
-app.use(
-  "/api",
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-  })
-);
-
-/* ─────────────────────────────
-   HEALTH ROUTE (IMPORTANT)
-───────────────────────────── */
-app.get("/health", async (req, res) => {
-  try {
-    await connectToDB();
-
-    res.json({
-      success: true,
-      message: "API working fine 🚀",
-      env: process.env.NODE_ENV,
-      time: new Date().toISOString(),
-    });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-      error: err.message,
-    });
-  }
+/* ───────────────────────────────
+   TEST ROUTES
+─────────────────────────────── */
+app.get("/", (req, res) => {
+  res.json({ message: "API working 🚀" });
 });
 
-/* ─────────────────────────────
+app.get("/api/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "Server running",
+  });
+});
+
+/* ───────────────────────────────
    ROUTES
-───────────────────────────── */
+─────────────────────────────── */
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 
-/* ─────────────────────────────
-   ERROR HANDLING
-───────────────────────────── */
+/* ───────────────────────────────
+   ERROR HANDLERS
+─────────────────────────────── */
 app.use(notFound);
 app.use(errorHandler);
 
-/* ─────────────────────────────
-   VERCEL EXPORT (IMPORTANT)
-───────────────────────────── */
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
 module.exports = app;
