@@ -10,32 +10,68 @@ import { getMeApi, loginApi, logoutApi } from "../api/authApi";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-
   const [loading, setLoading] = useState(true);
 
   const [user, setUser] = useState(() => {
-  const savedUser = localStorage.getItem("user");
-  return savedUser ? JSON.parse(savedUser) : null;
-});
+    const savedUser = localStorage.getItem("user");
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
   // Restore session on mount
+  // useEffect(() => {
+  //   const restore = async () => {
+  //     const token = localStorage.getItem("accessToken");
+  //     if (!token) {
+  //       setLoading(false);
+  //       return;
+  //     }
+  //     try {
+  //       const { data } = await getMeApi();
+  //       setUser(data.data || data.user || data);
+  //     } catch {
+  //       localStorage.removeItem("accessToken");
+  //       localStorage.removeItem("refreshToken");
+  //       localStorage.removeItem("user");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   restore();
+  // }, []);
+
   useEffect(() => {
     const restore = async () => {
       const token = localStorage.getItem("accessToken");
+
       if (!token) {
         setLoading(false);
         return;
       }
+
       try {
         const { data } = await getMeApi();
+
         setUser(data.data || data.user || data);
-      } catch {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
+      } catch (err) {
+        console.log("Restore failed:", err.response?.status);
+
+        // ✅ Only logout if token is actually invalid
+        if (err.response?.status === 401) {
+          localStorage.removeItem("accessToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
+          setUser(null);
+        } else {
+          // ✅ Keep user logged in (fallback to localStorage)
+          const savedUser = localStorage.getItem("user");
+          if (savedUser) {
+            setUser(JSON.parse(savedUser));
+          }
+        }
       } finally {
         setLoading(false);
       }
     };
+
     restore();
   }, []);
 
