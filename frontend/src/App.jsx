@@ -2,18 +2,18 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute, RoleRoute } from './components/common/ProtectedRoute'
-// import AppLayout from './components/layout/AppLayout'
+ import AppLayout from './components/layout/AppLayout'
 
 // Auth
-// import LoginPage from './pages/auth/LoginPage'
-// import RegisterPage from './pages/auth/RegisterPage'
+import LoginPage from './pages/auth/LoginPage'
+import RegisterPage from './pages/auth/RegisterPage'
 
 // // App pages
-// import DashboardPage from './pages/admin/DashboardPage'
-// import UsersListPage from './pages/admin/UsersListPage'
-// import UserDetailPage from './pages/admin/UserDetailPage'
-// import CreateUserPage from './pages/admin/CreateUserPage'
-// import ProfilePage from './pages/user/ProfilePage'
+import DashboardPage from './pages/admin/DashboardPage'
+import UsersListPage from './pages/admin/UsersListPage'
+import UserDetailPage from './pages/admin/UserDetailPage'
+import CreateUserPage from './pages/admin/CreateUserPage'
+import ProfilePage from './pages/user/ProfilePage'
 
 export default function App() {
   return (

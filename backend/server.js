@@ -57,10 +57,16 @@ app.use("/api/auth", authLimiter);
 ─────────────────────────────── */
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    origin: [
+      "http://localhost:5173",
+      "https://your-frontend.vercel.app",
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
 );
+
+app.options("*", cors()); // ✅ add this line
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

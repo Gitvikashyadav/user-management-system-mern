@@ -41,7 +41,11 @@ export default function RegisterPage() {
   const handleSubmit = async (ev) => {
     ev.preventDefault()
     if (!validate()) return
+   
+    
     setLoading(true)
+    
+    
     try {
       await registerApi({ name: form.name, email: form.email, password: form.password })
       await login({ email: form.email, password: form.password })
