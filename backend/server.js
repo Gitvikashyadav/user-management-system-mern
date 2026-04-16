@@ -59,14 +59,14 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://your-frontend.vercel.app",
+      "https://user-management-system-mern-frontend-fidn.onrender.com",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
 );
 
-app.options("*", cors()); // ✅ add this line
+app.options("*", cors()); 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
