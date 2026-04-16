@@ -10,9 +10,13 @@ import { getMeApi, loginApi, logoutApi } from "../api/authApi";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+
   const [loading, setLoading] = useState(true);
 
+  const [user, setUser] = useState(() => {
+  const savedUser = localStorage.getItem("user");
+  return savedUser ? JSON.parse(savedUser) : null;
+});
   // Restore session on mount
   useEffect(() => {
     const restore = async () => {
