@@ -197,8 +197,8 @@ npm run dev
 
 **Your Name**
 
-* GitHub: your-link
-* LinkedIn: your-link
+* GitHub: [Github.com](https://github.com/Gitvikashyadav/user-management-system-mern)
+* LinkedIn: [ LinkedIn.com](https://www.linkedin.com/in/vikashrj/)
 
 ---
 
