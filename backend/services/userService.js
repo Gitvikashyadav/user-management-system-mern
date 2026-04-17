@@ -46,6 +46,7 @@ const getAllUsers = async ({ page = 1, limit = 10, search, role, status }) => {
     pages: Math.ceil(total / limitNum),
   },
 };
+};
 
 /**
  * Get a single user by ID
