@@ -65,12 +65,10 @@ const getUserById = async (targetId, requestingUser) => {
     .populate({
       path: "createdBy",
       select: "name email",
-      options: { strictPopulate: false },
     })
     .populate({
       path: "updatedBy",
       select: "name email",
-      options: { strictPopulate: false },
     })
     .select("-password -refreshToken");
 

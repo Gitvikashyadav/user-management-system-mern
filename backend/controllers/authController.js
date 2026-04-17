@@ -1,7 +1,7 @@
+const AppError = require("../utils/AppError");
 const authService = require("../services/authService");
 const { asyncHandler } = require("../middleware/asyncHandler");
 const { sendTokenResponse } = require("../utils/tokenUtils");
-
 /**
  * @route   POST /api/auth/register
  * @access  Public

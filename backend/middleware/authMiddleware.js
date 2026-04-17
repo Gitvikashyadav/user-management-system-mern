@@ -7,6 +7,7 @@ const AppError = require("../utils/AppError");
 /**
  * protect — verifies the JWT access token and attaches user to req
  */
+require("dotenv").config();  // ✅ FIRST
 console.log("JWT SECRET:", process.env.JWT_ACCESS_SECRET);
 const protect = asyncHandler(async (req, res, next) => {
   let token;
