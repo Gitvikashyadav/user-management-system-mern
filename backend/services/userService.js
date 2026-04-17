@@ -28,8 +28,16 @@ const getAllUsers = async ({ page = 1, limit = 10, search, role, status }) => {
 
   const [users, total] = await Promise.all([
     User.find(query)
-      .populate("createdBy", "name email")
-      .populate("updatedBy", "name email")
+      .populate({
+        path: "createdBy",
+        select: "name email",
+        options: { strictPopulate: false },
+      })
+      .populate({
+        path: "updatedBy",
+        select: "name email",
+        options: { strictPopulate: false },
+      })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limitNum)
@@ -38,14 +46,14 @@ const getAllUsers = async ({ page = 1, limit = 10, search, role, status }) => {
   ]);
 
   return {
-  users,
-  pagination: {
-    total,
-    page: pageNum,
-    limit: limitNum,
-    pages: Math.ceil(total / limitNum),
-  },
-};
+    users,
+    pagination: {
+      total,
+      page: pageNum,
+      limit: limitNum,
+      pages: Math.ceil(total / limitNum),
+    },
+  };
 };
 
 /**
@@ -54,8 +62,16 @@ const getAllUsers = async ({ page = 1, limit = 10, search, role, status }) => {
  */
 const getUserById = async (targetId, requestingUser) => {
   const user = await User.findById(targetId)
-    .populate("createdBy", "name email")
-    .populate("updatedBy", "name email")
+    .populate({
+      path: "createdBy",
+      select: "name email",
+      options: { strictPopulate: false },
+    })
+    .populate({
+      path: "updatedBy",
+      select: "name email",
+      options: { strictPopulate: false },
+    })
     .select("-password -refreshToken");
 
   if (!user) throw new AppError("User not found.", 404);
