@@ -56,18 +56,17 @@ app.use("/api/auth", authLimiter);
 /* ───────────────────────────────
    MIDDLEWARE
 ─────────────────────────────── */
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://user-management-system-mern-frontend-fidn.onrender.com",
-    ],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  })
-);
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",
+    "https://user-management-system-mern-frontend-fidn.onrender.com",
+  ],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+};
 
-app.options("*", cors()); 
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -87,7 +86,7 @@ app.get("/", (req, res) => {
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
-    message: "Server running vikash Raja ji",
+    message: "Server running vikash",
   });
 });
 
