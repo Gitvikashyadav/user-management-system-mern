@@ -30,9 +30,16 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 
   // Find user (exclude password)
-  const user = await User.findById(decoded.id).select(
-    "-password -refreshToken",
-  );
+  // const user = await User.findById(decoded.id).select(
+  //   "-password -refreshToken",
+  // );
+  const userId = decoded.id || decoded._id;
+
+  if (!userId) {
+    throw new AppError("Invalid token payload", 401);
+  }
+
+  const user = await User.findById(userId).select("-password -refreshToken");
 
   if (!user) {
     throw new AppError("User belonging to this token no longer exists.", 401);
