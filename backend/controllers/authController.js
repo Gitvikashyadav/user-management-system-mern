@@ -52,9 +52,20 @@ const logout = asyncHandler(async (req, res) => {
  * @route   GET /api/auth/me
  * @access  Private
  */
-const getMe = asyncHandler(async (req, res) => {
-  const user = await authService.getMe(req.user._id);
-  res.status(200).json({ success: true, data: { user } });
-});
+// const getMe = asyncHandler(async (req, res) => {
+//   const user = await authService.getMe(req.user._id);
+//   res.status(200).json({ success: true, data: { user } });
+// });
 
+const getMe = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw new AppError("User not authenticated", 401);
+  }
+
+  // ✅ directly return middleware user (no DB call needed)
+  res.status(200).json({
+    success: true,
+    data: { user: req.user },
+  });
+});
 module.exports = { register, login, refresh, logout, getMe };
