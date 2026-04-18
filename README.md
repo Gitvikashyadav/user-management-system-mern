@@ -17,7 +17,7 @@ Built with scalability and security in mind, the system supports **Admin, Manage
 
 ## ✨ Core Features
 
-### 🔐 Authentication & Security
+###  Authentication & Security
 
 * JWT-based authentication (Access Token)
 * Password hashing using bcrypt
@@ -29,7 +29,7 @@ Built with scalability and security in mind, the system supports **Admin, Manage
 
 ---
 
-### 👥 Role-Based Access Control (RBAC)
+###  Role-Based Access Control (RBAC)
 
 * **Admin**
 
@@ -48,7 +48,7 @@ Built with scalability and security in mind, the system supports **Admin, Manage
 
 ---
 
-### 🧑‍💼 User Management
+###  User Management
 
 * Create users (Admin only)
 * Update user details
@@ -59,7 +59,7 @@ Built with scalability and security in mind, the system supports **Admin, Manage
 
 ---
 
-## 🧪 Test Credentials
+##  Test Credentials
 
 Use the following credentials to test the system:
 
@@ -124,7 +124,7 @@ Authorization: Bearer YOUR_ACCESS_TOKEN
 
 ---
 
-## 🛡️ Admin Access Control
+##  Admin Access Control
 
 * Only **Admin** can access full user list and management features
 * Managers have limited visibility (non-admin users only)
