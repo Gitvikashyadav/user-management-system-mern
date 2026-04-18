@@ -51,6 +51,66 @@ The system supports **Admin, Manager, and User roles** with fine-grained permiss
 
 ---
 
+est Credentials & API Usage
+
+To help recruiters and developers quickly test the backend APIs, use the following demo credentials.
+
+🔐 Test Login Credentials
+{
+  "email": "testuser@gmail.com",
+  "password": "Test12345"
+}
+🚀 Step-by-Step API Testing Guide
+1️⃣ Login to Get Access Token
+
+Endpoint:
+
+POST /api/auth/login
+
+Full URL:
+
+https://user-management-system-mern-backend.onrender.com/api/auth/login
+
+Request Body:
+
+{
+  "email": "testuser@gmail.com",
+  "password": "Test12345"
+}
+
+Response:
+
+{
+  "success": true,
+  "data": {
+    "accessToken": "YOUR_ACCESS_TOKEN",
+    "refreshToken": "YOUR_REFRESH_TOKEN",
+    "user": { ... }
+  }
+}
+
+👉 Copy the accessToken for next requests.
+
+2️⃣ Get Logged-in User Info
+
+Endpoint:
+
+GET /api/auth/me
+
+Headers:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+3️⃣ Get All Users (Protected Route)
+
+Endpoint:
+
+GET /api/users?page=1&limit=10
+
+Headers:
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
 ### 🛡️ Security Best Practices
 
 * Input validation middleware
