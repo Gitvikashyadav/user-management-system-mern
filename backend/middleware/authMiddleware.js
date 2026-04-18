@@ -7,17 +7,18 @@ const AppError = require("../utils/AppError");
 /**
  * protect — verifies the JWT access token and attaches user to req
  */
-require("dotenv").config();  // ✅ FIRST
-console.log("JWT SECRET:", process.env.JWT_ACCESS_SECRET);
-const protect = asyncHandler(async (req, res, next) => {
-  let token;
 
+const protect = asyncHandler(async (req, res, next) => {
+  
+  let token;
+  console.log("Api user call the function", req.headers.authorization);
   if (req.headers.authorization?.startsWith("Bearer ")) {
     token = req.headers.authorization.split(" ")[1];
   }
+  console.log("token ===", token);
 
   if (!token) {
-    throw new AppError("Not authenticated. Please log in.", 401);
+    throw new AppError("Not vikash authenticated. Please log in.", 401);
   }
 
   // Verify token
@@ -32,16 +33,9 @@ const protect = asyncHandler(async (req, res, next) => {
   }
 
   // Find user (exclude password)
-  // const user = await User.findById(decoded.id).select(
-  //   "-password -refreshToken",
-  // );
-  const userId = decoded.id || decoded._id;
-
-  if (!userId) {
-    throw new AppError("Invalid token payload", 401);
-  }
-
-  const user = await User.findById(userId).select("-password -refreshToken");
+  const user = await User.findById(decoded.id).select(
+    "-password -refreshToken",
+  );
 
   if (!user) {
     throw new AppError("User belonging to this token no longer exists.", 401);

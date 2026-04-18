@@ -64,11 +64,11 @@ const getUserById = async (targetId, requestingUser) => {
   const user = await User.findById(targetId)
     .populate({
       path: "createdBy",
-      select: "name email",
+      select: "name email role",
     })
     .populate({
       path: "updatedBy",
-      select: "name email",
+      select: "name email role",
     })
     .select("-password -refreshToken");
 

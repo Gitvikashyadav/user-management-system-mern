@@ -1,5 +1,5 @@
-const userService = require('../services/userService');
-const { asyncHandler } = require('../middleware/asyncHandler');
+const userService = require("../services/userService");
+const { asyncHandler } = require("../middleware/asyncHandler");
 
 /**
  * @route   GET /api/users
@@ -47,7 +47,7 @@ const createUser = asyncHandler(async (req, res) => {
 
   res.status(201).json({
     success: true,
-    message: 'User created successfully.',
+    message: "User created successfully.",
     data: result,
   });
 });
@@ -62,7 +62,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: 'User updated successfully.',
+    message: "User updated successfully.",
     data: { user },
   });
 });
@@ -77,7 +77,7 @@ const updateOwnProfile = asyncHandler(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    message: 'Profile updated successfully.',
+    message: "Profile updated successfully.",
     data: { user },
   });
 });
@@ -107,12 +107,12 @@ const toggleUserStatus = asyncHandler(async (req, res) => {
   const user = await userService.updateUser(
     req.params.id,
     { status },
-    req.user
+    req.user,
   );
 
   res.status(200).json({
     success: true,
-    message: `User ${status === 'active' ? 'activated' : 'deactivated'} successfully.`,
+    message: `User ${status === "active" ? "activated" : "deactivated"} successfully.`,
     data: { user },
   });
 });

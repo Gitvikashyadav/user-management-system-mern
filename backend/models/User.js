@@ -72,7 +72,6 @@ userSchema.index({ email: 1 });
 userSchema.index({ role: 1 });
 userSchema.index({ status: 1 });
 
-
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
@@ -94,8 +93,9 @@ userSchema.methods.toSafeObject = function () {
 
 // ─── Virtual: Full profile label ─────────────────────────────────────────────
 userSchema.virtual("displayRole").get(function () {
-  return this.role.charAt(0).toUpperCase() + this.role.slice(1);
+  return this.role
+    ? this.role.charAt(0).toUpperCase() + this.role.slice(1)
+    : "User";
 });
-
 const User = mongoose.model("User", userSchema);
 module.exports = User;

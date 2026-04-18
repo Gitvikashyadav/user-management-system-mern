@@ -1,5 +1,5 @@
-const logger = require('../utils/logger');
-const AppError = require('../utils/AppError');
+const logger = require("../utils/logger");
+const AppError = require("../utils/AppError");
 
 /**
  * 404 handler — for unmatched routes
@@ -18,7 +18,7 @@ const errorHandler = (err, req, res, next) => {
   error.statusCode = err.statusCode || 500;
 
   // ── Mongoose: Bad ObjectId ─────────────────────────────────────────────────
-  if (err.name === 'CastError') {
+  if (err.name === "CastError") {
     error = new AppError(`Invalid ID format: ${err.value}`, 400);
   }
 
@@ -30,28 +30,30 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // ── Mongoose: Validation error ────────────────────────────────────────────
-  if (err.name === 'ValidationError') {
+  if (err.name === "ValidationError") {
     const messages = Object.values(err.errors).map((e) => e.message);
-    error = new AppError(messages.join('. '), 400);
+    error = new AppError(messages.join(". "), 400);
   }
 
   // ── JWT errors ────────────────────────────────────────────────────────────
-  if (err.name === 'JsonWebTokenError') {
-    error = new AppError('Invalid token. Please log in again.', 401);
+  if (err.name === "JsonWebTokenError") {
+    error = new AppError("Invalid token. Please log in again.", 401);
   }
-  if (err.name === 'TokenExpiredError') {
-    error = new AppError('Token expired. Please log in again.', 401);
+  if (err.name === "TokenExpiredError") {
+    error = new AppError("Token expired. Please log in again.", 401);
   }
 
   // Log server errors
   if (error.statusCode >= 500) {
-    logger.error(`${error.statusCode} - ${error.message} - ${req.originalUrl} - ${req.method}`);
+    logger.error(
+      `${error.statusCode} - ${error.message} - ${req.originalUrl} - ${req.method}`,
+    );
   }
 
   res.status(error.statusCode).json({
     success: false,
     message: error.message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
   });
 };
 

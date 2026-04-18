@@ -1,7 +1,7 @@
-const AppError = require("../utils/AppError");
 const authService = require("../services/authService");
 const { asyncHandler } = require("../middleware/asyncHandler");
 const { sendTokenResponse } = require("../utils/tokenUtils");
+
 /**
  * @route   POST /api/auth/register
  * @access  Public
@@ -52,20 +52,9 @@ const logout = asyncHandler(async (req, res) => {
  * @route   GET /api/auth/me
  * @access  Private
  */
-// const getMe = asyncHandler(async (req, res) => {
-//   const user = await authService.getMe(req.user._id);
-//   res.status(200).json({ success: true, data: { user } });
-// });
-
 const getMe = asyncHandler(async (req, res) => {
-  if (!req.user) {
-    throw new AppError("User not authenticated", 401);
-  }
-
-  // ✅ directly return middleware user (no DB call needed)
-  res.status(200).json({
-    success: true,
-    data: { user: req.user },
-  });
+  const user = await authService.getMe(req.user._id);
+  res.status(200).json({ success: true, data: { user } });
 });
+
 module.exports = { register, login, refresh, logout, getMe };

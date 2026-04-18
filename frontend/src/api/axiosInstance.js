@@ -35,7 +35,8 @@ api.interceptors.response.use(
         if (data.refreshToken)
           localStorage.setItem("refreshToken", data.refreshToken);
 
-        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
+        console.log("What value i am getimg",originalRequest)
         return api(originalRequest);
       } catch {
         localStorage.removeItem("accessToken");

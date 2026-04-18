@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
-  // Restore session on mount
+  //Restore session on mount
   // useEffect(() => {
   //   const restore = async () => {
   //     const token = localStorage.getItem("accessToken");
@@ -77,7 +77,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback(async (credentials) => {
     const { data } = await loginApi(credentials);
+    console.log("Datata",data);
     const { accessToken, refreshToken, user: userData } = data.data || data;
+    console.log("Access token===",accessToken,refreshToken);
+
     localStorage.setItem("accessToken", accessToken);
     if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
     localStorage.setItem("user", JSON.stringify(userData));

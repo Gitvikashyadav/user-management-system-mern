@@ -1,111 +1,103 @@
-require("dotenv").config();
-console.log("JWT:", process.env.JWT_ACCESS_SECRET);
+
+
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
+const mongoSanitize = require("express-mongo-sanitize");
 const rateLimit = require("express-rate-limit");
-const xss = require("xss-clean");
 
 const connectDB = require("./config/db");
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
+const logger = require("./utils/logger");
+
+require("dotenv").config();
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 
-/* ───────────────────────────────
-   SAFE ERROR HANDLING (FIXED)
-─────────────────────────────── */
-process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Rejection:", err.message);
-});
 
-/* ───────────────────────────────
-   SAFE DB CONNECTION
-─────────────────────────────── */
-let isConnected = false;
-const safeConnectDB = async () => {
-  if (isConnected) return;
-  await connectDB();
-  isConnected = true;
-};
-safeConnectDB();
-
-/* ───────────────────────────────
-   SECURITY
-─────────────────────────────── */
-app.use(helmet());
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: {
-    success: false,
-    message: "Too many requests",
-  },
-});
-
-app.use("/api", limiter);
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-});
-
-app.use("/api/auth", authLimiter);
-
-/* ───────────────────────────────
-   MIDDLEWARE
-─────────────────────────────── */
+// app.options("*", cors());
+// ─── General Middleware ───────────────────────────────────────────────────────
 const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://user-management-system-mern-frontend-fidn.onrender.com",
   ],
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-app.use(express.json());
+// ─── Security Middleware ──────────────────────────────────────────────────────
+app.use(helmet());
+app.use(mongoSanitize());
+
+// Rate limiting — 100 requests per 15 minutes per IP
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10000,
+  message: {
+    success: false,
+    message: "Too many requests, please try again later.",
+  },
+});
+ app.use("/api", limiter);
+
+// Stricter limiter for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10000,
+  message: {
+    success: false,
+    message: "Too many login attempts, please try again later.",
+  },
+});
+ app.use("/api/auth", authLimiter);
+
+
+
+
+app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(xss());
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
-/* ───────────────────────────────
-   TEST ROUTES
-─────────────────────────────── */
-app.get("/", (req, res) => {
-  res.json({ message: "API working 🚀" });
-});
-
+// ─── Health Check ─────────────────────────────────────────────────────────────
 app.get("/api/health", (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
-    message: "Server running vikash",
+    message: "Server is running",
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString(),
   });
 });
 
-/* ───────────────────────────────
-   ROUTES
-─────────────────────────────── */
+// ─── API Routes ───────────────────────────────────────────────────────────────
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/users", require("./routes/userRoutes"));
 
-/* ───────────────────────────────
-   ERROR HANDLERS
-─────────────────────────────── */
+// ─── Error Handling ───────────────────────────────────────────────────────────
 app.use(notFound);
 app.use(errorHandler);
 
+// ─── Start Server ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
+const server = app.listen(PORT, () => {
+  logger.info(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+});
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err) => {
+  logger.error(`Unhandled Rejection: ${err.message}`);
+  server.close(() => process.exit(1));
 });
 
 module.exports = app;

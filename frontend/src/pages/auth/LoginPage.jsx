@@ -28,13 +28,21 @@ export default function LoginPage() {
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
+    console.log("Call the function");
+
     if (!validate()) return;
     setLoading(true);
     try {
-      await login(form);
+      console.log("STEP 1: calling API");
+      const res = await login(form);
+      console.log("STEP 2: response", res);
       toast.success("Welcome back!");
       navigate(from, { replace: true });
     } catch (err) {
+      console.log("❌ FULL ERROR:", err);
+      console.log("❌ RESPONSE:", err?.response);
+      console.log("❌ DATA:", err?.response?.data);
+      // alert("ERROR: " + (err?.response?.data?.message || err.message));
       toast.error(err.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
