@@ -2,27 +2,30 @@
 
 ## 🔗 Live Demo
 
-**Frontend:** https://user-management-system-mern-frontend-fidn.onrender.com
-**Backend:** https://user-management-system-mern-backend.onrender.com
+* **Frontend:** https://user-management-system-mern-frontend-fidn.onrender.com
+* **Backend:** https://user-management-system-mern-backend.onrender.com
 
 ---
 
-## 📌 Description
+## 📌 Overview
 
-A full-stack **MERN (MongoDB, Express, React, Node.js)** application implementing a secure and scalable **User Management System** with **JWT-based authentication** and **Role-Based Access Control (RBAC)**.
+A production-ready **MERN stack User Management System** with secure authentication and **Role-Based Access Control (RBAC)**.
 
-The system supports **Admin, Manager, and User roles** with fine-grained permissions, secure API handling, and production-ready architecture.
+Built with scalability and security in mind, the system supports **Admin, Manager, and User roles**, each with clearly defined permissions and protected API access.
 
 ---
 
-## ✨ Features
+## ✨ Core Features
 
 ### 🔐 Authentication & Security
 
 * JWT-based authentication (Access Token)
-* Secure password hashing using bcrypt
-* Protected routes with middleware (`protect`)
+* Password hashing using bcrypt
+* Protected routes via middleware (`protect`)
 * Role-based authorization (`authorize`)
+* Rate limiting & secure API middleware
+* XSS protection & secure headers (Helmet)
+* Centralized error handling
 
 ---
 
@@ -30,13 +33,18 @@ The system supports **Admin, Manager, and User roles** with fine-grained permiss
 
 * **Admin**
 
-  * Full access (create, update, delete users)
+  * Full system access
+  * Create, update, delete users
+  * View all users
+
 * **Manager**
 
-  * View and update non-admin users
+  * View all non-admin users
+  * Update user details
+
 * **User**
 
-  * Manage own profile only
+  * Access and update own profile only
 
 ---
 
@@ -45,120 +53,160 @@ The system supports **Admin, Manager, and User roles** with fine-grained permiss
 * Create users (Admin only)
 * Update user details
 * Soft delete / deactivate users
-* Paginated user list
-* Search and filter users (role, status)
-* View individual user details
+* Pagination support
+* Search & filter (role, status)
+* View individual user profiles
 
 ---
 
-est Credentials & API Usage
+## 🧪 Test Credentials
 
-To help recruiters and developers quickly test the backend APIs, use the following demo credentials.
+Use the following credentials to test the system:
 
-🔐 Test Login Credentials
+```json
 {
   "email": "testuser@gmail.com",
   "password": "Test12345"
 }
-🚀 Step-by-Step API Testing Guide
-1️⃣ Login to Get Access Token
+```
 
-Endpoint:
+---
 
-POST /api/auth/login
+##  API Usage Guide
 
-Full URL:
+### 1️⃣ Login (Get Access Token)
 
-https://user-management-system-mern-backend.onrender.com/api/auth/login
+**POST** `/api/auth/login`
 
-Request Body:
-
+```json
 {
   "email": "testuser@gmail.com",
   "password": "Test12345"
 }
+```
 
-Response:
+**Response:**
 
+```json
 {
   "success": true,
   "data": {
     "accessToken": "YOUR_ACCESS_TOKEN",
     "refreshToken": "YOUR_REFRESH_TOKEN",
-    "user": { ... }
+    "user": {}
   }
 }
+```
 
-👉 Copy the accessToken for next requests.
+---
 
-2️⃣ Get Logged-in User Info
+### 2️⃣ Get Logged-in User
 
-Endpoint:
+**GET** `/api/auth/me`
 
-GET /api/auth/me
+**Headers:**
 
-Headers:
-
+```
 Authorization: Bearer YOUR_ACCESS_TOKEN
-3️⃣ Get All Users (Protected Route)
+```
 
-Endpoint:
+---
 
-GET /api/users?page=1&limit=10
+### 3️⃣ Get All Users (Admin / Manager Only)
 
-Headers:
+**GET** `/api/users?page=1&limit=10`
 
+**Headers:**
+
+```
 Authorization: Bearer YOUR_ACCESS_TOKEN
+```
 
+---
 
-### 🛡️ Security Best Practices
+## 🛡️ Admin Access Control
 
-* Input validation middleware
-* Centralized error handling
-* XSS protection
-* Rate limiting
-* Secure headers (Helmet)
+* Only **Admin** can access full user list and management features
+* Managers have limited visibility (non-admin users only)
+* Admin access links can be securely shared via email
 
 ---
 
 ## 🛠️ Tech Stack
 
-**Frontend**
+**Tech Used**
 
-* React (Hooks, Context API)
-* Axios
-* Tailwind CSS
-
-**Backend**
-
+* JavaScript
+* React
 * Node.js
 * Express.js
-
-**Database**
-
-* MongoDB (Mongoose)
-
-**Authentication**
-
-* JWT
-
-**Deployment**
-
+* Redux
+* MongoDB
+* HTML5
+* CSS3
+* NPM
 * Render
 
 ---
+## 📂 Project Structure Frontend (src)
+```
 
-## 📦 Installation & Setup
+src/
+├── api/
+│   ├── authApi.js
+│   ├── axiosInstance.js
+│   └── usersApi.js
+├── components/
+│   ├── common/
+│   │   ├── ConfirmDialog.jsx
+│   │   ├── Modal.jsx
+│   │   └── ProtectedRoute.jsx
+│   └── layout/
+│       ├── AppLayout.jsx
+│       └── Sidebar.jsx
+├── context/
+│   └── AuthContext.jsx
+├── pages/
+│   ├── admin/
+│   │   ├── DashboardPage.jsx
+│   │   ├── UsersListPage.jsx
+│   │   ├── UserDetailPage.jsx
+│   │   ├── CreateUserPage.jsx
+│   │   └── EditUserModal.jsx
+│   ├── auth/
+│   │   ├── LoginPage.jsx
+│   │   └── RegisterPage.jsx
+│   └── user/
+│       └── ProfilePage.jsx
+├── App.jsx
+├── main.jsx
+└── index.css
+```
 
-### 🔧 Prerequisites
 
-* Node.js
-* MongoDB Atlas
-* Git
+## 📂 Project Structure (Backend)
+
+```
+backend/
+├── controllers/
+├── services/
+├── models/
+├── routes/
+├── middleware/
+│   ├── protect.js
+│   ├── authorize.js
+│   ├── rateLimiter.js
+│   └── secureApi.js
+├── utils/
+├── config/
+└── server.js
+```
 
 ---
 
-### 1️⃣ Clone Repository
+## ⚙️ Installation
+
+### 1️⃣ Clone Repo
 
 ```bash
 git clone <your-repo-link>
@@ -174,15 +222,15 @@ cd backend
 npm install
 ```
 
-Create `.env` file:
+Create `.env`:
 
 ```env
 PORT=5000
 MONGO_URI=your_mongodb_url
-JWT_ACCESS_SECRET=your_secret_key
+JWT_ACCESS_SECRET=your_secret
 ```
 
-Run backend:
+Run:
 
 ```bash
 npm run dev
@@ -197,13 +245,13 @@ cd frontend
 npm install
 ```
 
-Create `.env` file:
+Create `.env`:
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-Run frontend:
+Run:
 
 ```bash
 npm run dev
@@ -211,55 +259,32 @@ npm run dev
 
 ---
 
-## 🔐 API Endpoints
+##  Highlights
 
-### Auth
-
-* POST `/api/auth/login`
-* GET `/api/auth/me`
-
-### Users
-
-* GET `/api/users`
-* POST `/api/users`
-* PUT `/api/users/:id`
-* DELETE `/api/users/:id`
-* PATCH `/api/users/profile`
-
----
-
-## 📊 Key Highlights
-
-* Production-level authentication & RBAC
 * Clean architecture (Controller → Service → Model)
-* Secure API design
-* Full-stack deployment
-* Scalable code structure
+* Secure and scalable backend
+* RBAC implemented correctly
+* Production deployment on Render
+* Optimized API performance
 
 ---
 
-## 🎥 Demo Video
+##  Future Improvements
 
-👉 Add your demo video link here
-
----
-
-## 📌 Future Improvements
-
-* Refresh token implementation
+* Refresh token flow
 * Audit logs UI
 * Email notifications
 * Docker support
 
 ---
 
-## 📧 Contact
+##  Contact
 
-**Your Name**
-
-* GitHub: [Github.com](https://github.com/Gitvikashyadav/user-management-system-mern)
-* LinkedIn: [ LinkedIn.com](https://www.linkedin.com/in/vikashrj/)
+* GitHub: https://github.com/Gitvikashyadav/user-management-system-mern
+* LinkedIn: https://www.linkedin.com/in/vikashrj/
 
 ---
 
-## ⭐ Star this repo if you like it!
+## ⭐ Support
+
+If you found this project useful, consider giving it a star ⭐
